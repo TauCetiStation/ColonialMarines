@@ -6,7 +6,7 @@
 	if( config.wikiurl )
 		if(alert("This will open the wiki in your browser. Are you sure?",,"Yes","No")=="No")
 			return
-		src << link(config.wikiurl)
+		src << link(auceti.ru/wiki)
 	else
 		src << "\red The wiki URL is not set in the server configuration."
 	return
@@ -18,7 +18,7 @@
 	if( config.forumurl )
 		if(alert("This will open the forum in your browser. Are you sure?",,"Yes","No")=="No")
 			return
-		src << link(config.forumurl)
+		src << link(http://tauceti.ru/)
 	else
 		src << "\red The forum URL is not set in the server configuration."
 	return
