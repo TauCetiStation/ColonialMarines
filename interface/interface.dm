@@ -6,7 +6,7 @@
 	if( config.wikiurl )
 		if(alert("This will open the wiki in your browser. Are you sure?",,"Yes","No")=="No")
 			return
-		src << link(auceti.ru/wiki)
+		src << link(http://tauceti.ru/wiki)
 	else
 		src << "\red The wiki URL is not set in the server configuration."
 	return
