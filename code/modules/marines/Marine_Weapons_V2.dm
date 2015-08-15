@@ -314,6 +314,7 @@
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
 	dangerous = 1
+	var/string_attached
 
 	prime()
 		spawn(0)
