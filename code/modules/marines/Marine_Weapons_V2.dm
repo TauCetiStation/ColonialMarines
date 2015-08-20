@@ -285,6 +285,12 @@
 							"\red <b>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</b>")
 		return (BRUTELOSS)
 
+turf/simulated/floor/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W,/obj/item/weapon/combat_knife) )
+		for(var/obj/effect/alien/weeds/Weed in src)
+			Weed.health -= 50
+			Weed.healthcheck()
+
 /obj/item/weapon/throwing_knife
 	name ="Throwing Knife"
 	icon='icons/obj/weapons.dmi'
