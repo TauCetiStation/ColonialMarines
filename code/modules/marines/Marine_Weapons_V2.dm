@@ -401,3 +401,75 @@
 		del(src)
 //Incendiary
 //**//TODO
+
+/obj/item/weapon/grenade/explosive/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W,/obj/item/weapon/cable_coil) )
+		var/obj/item/weapon/cable_coil/CC = W
+		if(string_attached)
+			user << "\blue There already is a string attached to this grenade."
+			return
+
+		if(CC.amount <= 0)
+			user << "\blue This cable coil appears to be empty."
+			del(CC)
+			return
+
+		new /obj/item/device/mine/grenade_mine(user.loc)
+		del(src)
+		string_attached = 1
+		user << "\blue You attach a string to the grenade."
+		CC.use(1)
+	else if(istype(W,/obj/item/weapon/wirecutters) )
+		if(!string_attached)
+			..()
+			return
+
+		var/obj/item/weapon/cable_coil/CC = new/obj/item/weapon/cable_coil(user.loc)
+		CC.amount = 1
+		CC.updateicon()
+		overlays = list()
+		string_attached = null
+		user << "\blue You detach the string from the coin."
+	else ..()
+
+/obj/item/device/mine/grenade_mine
+	name = "grenade mine"
+	desc = "An anti-personnel mine. Useful for setting traps or for area denial. "
+	icon = 'icons/obj/grenade.dmi'
+	icon_state = "grenade_mine"
+	force = 5.0
+	w_class = 2.0
+	layer = 3
+	throwforce = 5.0
+	throw_range = 6
+	throw_speed = 3
+	unacidable = 1
+	flags = FPRINT | TABLEPASS
+
+/obj/item/device/mine/grenade_mine/attack_self(mob/living/user as mob)
+	if(locate(/obj/item/device/mine/grenade_mine) in get_turf(src))
+		src << "There's already a mine at this position!"
+		return
+	if(!anchored)
+		user.visible_message("\blue \The [user] is deploying \the [src]")
+		if(!do_after(user,40))
+			user.visible_message("\blue \The [user] decides not to deploy \the [src].")
+			return
+		user.visible_message("\blue \The [user] deployed \the [src].")
+		anchored = 1
+		icon_state = "grenade_mine_active"
+		user.drop_item()
+		return
+
+/obj/item/device/mine/grenade_mine/HasEntered(AM as mob|obj)
+	Bumped(AM)
+
+/obj/item/device/mine/grenade_mine/Bumped(mob/M as mob|obj)
+	if(!anchored) return //If armed
+	if(triggered) return
+
+	if(istype(M, /mob/living/carbon) && !istype(M, /mob/living/carbon/alien/larva)) //Only humanoid aliens can trigger it.
+		for(var/mob/O in viewers(world.view, src.loc))
+			O << "<font color='red'>[M] triggered the \icon[src] [src]!</font>"
+		triggered = 1
+		call(src,triggertype)(M)
